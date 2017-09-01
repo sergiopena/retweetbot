@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'json'
+require 'logger'
+require 'twitter'
+
+$retweet_from="cientefico"
+
+$log = Logger.new(STDOUT)
+$log.level = Logger::DEBUG
+
+begin
+  accounts = JSON.parse(File.read('/data/accounts.json'))
+rescue => e
+  $log.error "Failed to read account data #{e}"
+  $log.error "Make sure you mounted a dir on /data for the container"
+  $log.error "and that dir has an accounts.json file with the credentials"
+  raise e
+end
+
+def retweet(credentials)
+  #Twitter configuration
+	client = Twitter::REST::Client.new do |config|
+      config.consumer_key        = credentials['consumer_key']
+      config.consumer_secret     = credentials['consumer_secret']
+      config.access_token        = credentials['access_token']
+      config.access_token_secret = credentials['access_token_secret']
+	end
+
+  #Get latest tweet
+  begin
+    latest_tweet=client.user_timeline($retweet_from, { :include_rts => false, :exclude_replies => true, :count => 1} ).first
+    $log.debug "Got latest tweet #{latest_tweet.text}"
+
+    #Retweet unless already done
+    if latest_tweet.retweeted?
+      $log.debug "Already retweeted"
+    else
+      client.retweet(latest_tweet)
+      $log.debug "Retweeted!"
+    end
+  rescue => e
+    $log.error e
+  end
+end
+
+accounts.each do |account|
+  $log.info "Going for account #{account.first}"
+  retweet(account.last)
+end
