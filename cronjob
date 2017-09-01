@@ -1,1 +1,1 @@
-*/1 * * * * /usr/src/app/run
+1 * * * * /usr/src/app/run

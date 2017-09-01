@@ -3,7 +3,7 @@
 Quickly got tired of Marketing people asking me if I retweeted their stuff, so I made this.
 Basically, it reads tweeter tokens from a JSON and check for the latest tweet from a given account and retweets it.
 
-#Usage
+# Usage
 
 It's dockerized so clone the repo and:
 

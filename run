@@ -5,7 +5,7 @@ require 'json'
 require 'logger'
 require 'twitter'
 
-$retweet_from="cientefico"
+$retweet_from=""
 
 $log = Logger.new(STDOUT)
 $log.level = Logger::DEBUG
